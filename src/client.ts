@@ -29,6 +29,10 @@ export class DevDashClient {
     return body
   }
 
+  // ========================================
+  // タスク
+  // ========================================
+
   async listTasks(params: {
     project_id: string
     status_id?: string
@@ -79,6 +83,207 @@ export class DevDashClient {
 
   async deleteTask(taskId: string) {
     return this.request(`/api/v1/tasks/${taskId}`, {
+      method: 'DELETE',
+    })
+  }
+
+  // ========================================
+  // プロジェクト
+  // ========================================
+
+  async listProjects(params?: {
+    status?: string
+    methodology?: string
+    phase?: string
+    page?: number
+    per_page?: number
+  }) {
+    const query = new URLSearchParams()
+    if (params?.status) query.set('status', params.status)
+    if (params?.methodology) query.set('methodology', params.methodology)
+    if (params?.phase) query.set('phase', params.phase)
+    if (params?.page) query.set('page', String(params.page))
+    if (params?.per_page) query.set('per_page', String(params.per_page))
+
+    const qs = query.toString()
+    return this.request(`/api/v1/projects${qs ? `?${qs}` : ''}`)
+  }
+
+  async getProject(projectId: string) {
+    return this.request(`/api/v1/projects/${projectId}`)
+  }
+
+  async createProject(params: {
+    title: string
+    code?: string
+    description?: string
+    purpose?: string
+    start_date?: string
+    end_date?: string
+    methodology?: string
+    phase?: string
+    status?: string
+    priority?: string
+    scale?: number
+    budget?: number
+    target_profit_rate?: number
+    currency_code?: string
+    client?: string
+    project_manager_id?: string
+    risks?: string
+  }) {
+    return this.request('/api/v1/projects', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    })
+  }
+
+  async updateProject(projectId: string, updates: Record<string, any>) {
+    return this.request(`/api/v1/projects/${projectId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    })
+  }
+
+  async deleteProject(projectId: string) {
+    return this.request(`/api/v1/projects/${projectId}`, {
+      method: 'DELETE',
+    })
+  }
+
+  // ========================================
+  // メンバー
+  // ========================================
+
+  async listMembers(projectId: string, params?: {
+    page?: number
+    per_page?: number
+  }) {
+    const query = new URLSearchParams()
+    if (params?.page) query.set('page', String(params.page))
+    if (params?.per_page) query.set('per_page', String(params.per_page))
+
+    const qs = query.toString()
+    return this.request(`/api/v1/projects/${projectId}/members${qs ? `?${qs}` : ''}`)
+  }
+
+  async getMember(projectId: string, memberId: string) {
+    return this.request(`/api/v1/projects/${projectId}/members/${memberId}`)
+  }
+
+  async addMember(projectId: string, params: {
+    workspace_member_id: string
+    role_code?: string
+    assignment_rate?: number
+    skill_description?: string
+    workable_hours?: number
+  }) {
+    return this.request(`/api/v1/projects/${projectId}/members`, {
+      method: 'POST',
+      body: JSON.stringify(params),
+    })
+  }
+
+  async updateMember(projectId: string, memberId: string, updates: Record<string, any>) {
+    return this.request(`/api/v1/projects/${projectId}/members/${memberId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    })
+  }
+
+  async removeMember(projectId: string, memberId: string) {
+    return this.request(`/api/v1/projects/${projectId}/members/${memberId}`, {
+      method: 'DELETE',
+    })
+  }
+
+  // ========================================
+  // マイルストーン
+  // ========================================
+
+  async listMilestones(projectId: string, params?: {
+    page?: number
+    per_page?: number
+  }) {
+    const query = new URLSearchParams()
+    if (params?.page) query.set('page', String(params.page))
+    if (params?.per_page) query.set('per_page', String(params.per_page))
+
+    const qs = query.toString()
+    return this.request(`/api/v1/projects/${projectId}/milestones${qs ? `?${qs}` : ''}`)
+  }
+
+  async getMilestone(projectId: string, milestoneId: string) {
+    return this.request(`/api/v1/projects/${projectId}/milestones/${milestoneId}`)
+  }
+
+  async createMilestone(projectId: string, params: {
+    name: string
+    description?: string
+    start_date?: string
+    due_date?: string
+    status_id?: string
+  }) {
+    return this.request(`/api/v1/projects/${projectId}/milestones`, {
+      method: 'POST',
+      body: JSON.stringify(params),
+    })
+  }
+
+  async updateMilestone(projectId: string, milestoneId: string, updates: Record<string, any>) {
+    return this.request(`/api/v1/projects/${projectId}/milestones/${milestoneId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    })
+  }
+
+  async deleteMilestone(projectId: string, milestoneId: string) {
+    return this.request(`/api/v1/projects/${projectId}/milestones/${milestoneId}`, {
+      method: 'DELETE',
+    })
+  }
+
+  // ========================================
+  // ステータス
+  // ========================================
+
+  async listStatuses(params?: {
+    page?: number
+    per_page?: number
+  }) {
+    const query = new URLSearchParams()
+    if (params?.page) query.set('page', String(params.page))
+    if (params?.per_page) query.set('per_page', String(params.per_page))
+
+    const qs = query.toString()
+    return this.request(`/api/v1/statuses${qs ? `?${qs}` : ''}`)
+  }
+
+  async getStatus(statusId: string) {
+    return this.request(`/api/v1/statuses/${statusId}`)
+  }
+
+  async createStatus(params: {
+    name: string
+    category?: string
+    color?: string
+    order_index?: number
+  }) {
+    return this.request('/api/v1/statuses', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    })
+  }
+
+  async updateStatus(statusId: string, updates: Record<string, any>) {
+    return this.request(`/api/v1/statuses/${statusId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    })
+  }
+
+  async deleteStatus(statusId: string) {
+    return this.request(`/api/v1/statuses/${statusId}`, {
       method: 'DELETE',
     })
   }
