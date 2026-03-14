@@ -58,7 +58,55 @@ Claude Desktopの設定ファイルを開きます。
 > }
 > ```
 
-### 3. Claude Code に設定する
+### 3. Cursor に設定する
+
+プロジェクトルートに `.cursor/mcp.json` を作成します（グローバル設定の場合は `~/.cursor/mcp.json`）。
+
+```json
+{
+  "mcpServers": {
+    "devdash": {
+      "command": "npx",
+      "args": ["-y", "devdash-mcp"],
+      "env": {
+        "DEVDASH_API_KEY": "dd_sk_ここにAPIキーを貼り付け",
+        "DEVDASH_BASE_URL": "https://your-domain.com"
+      }
+    }
+  }
+}
+```
+
+> **npm公開前（開発者向け）**: `"command": "node"`, `"args": ["/path/to/mcp-server/dist/index.js"]` に置き換えてください。
+
+設定後、Cursorを再起動すると MCP ツールが利用可能になります。
+
+### 4. Codex に設定する
+
+プロジェクトルートに `codex-mcp.json` を作成します。
+
+```json
+{
+  "mcpServers": {
+    "devdash": {
+      "command": "npx",
+      "args": ["-y", "devdash-mcp"],
+      "env": {
+        "DEVDASH_API_KEY": "dd_sk_ここにAPIキーを貼り付け",
+        "DEVDASH_BASE_URL": "https://your-domain.com"
+      }
+    }
+  }
+}
+```
+
+Codex起動時に `--mcp-config` フラグで指定します:
+
+```bash
+codex --mcp-config codex-mcp.json
+```
+
+### 5. Claude Code に設定する
 
 ```bash
 claude mcp add devdash \
@@ -75,9 +123,9 @@ claude mcp add devdash \
 >   -- node /path/to/mcp-server/dist/index.js
 > ```
 
-### 4. 動作確認
+### 6. 動作確認
 
-Claude DesktopまたはClaude Codeを再起動し、以下のように話しかけてください:
+AIクライアントを再起動し、以下のように話しかけてください:
 
 ```
 devDashのプロジェクト一覧からタスクを取得して
