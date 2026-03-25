@@ -74,6 +74,24 @@ export class DevDashClient {
     })
   }
 
+  async bulkCreateTasks(tasks: {
+    title: string
+    project_id: string
+    description?: string
+    due_date?: string
+    start_date?: string
+    priority?: string
+    assignee_id?: string
+    milestone_id?: string
+    status_id?: string
+    estimated_hours?: number
+  }[]) {
+    return this.request('/api/v1/tasks/bulk', {
+      method: 'POST',
+      body: JSON.stringify({ tasks }),
+    })
+  }
+
   async updateTask(taskId: string, updates: Record<string, any>) {
     return this.request(`/api/v1/tasks/${taskId}`, {
       method: 'PATCH',

@@ -107,6 +107,29 @@ server.tool(
   }
 )
 
+server.tool(
+  'tasks_bulk_create',
+  '複数のタスクを一括作成します（最大50件）。',
+  {
+    tasks: z.array(z.object({
+      title: z.string().min(1).max(255).describe('タスク名'),
+      project_id: z.string().uuid().describe('プロジェクトID'),
+      description: z.string().max(10000).optional().describe('タスクの詳細説明'),
+      due_date: z.string().optional().describe('期限日 (YYYY-MM-DD)'),
+      start_date: z.string().optional().describe('開始日 (YYYY-MM-DD)'),
+      priority: z.enum(['high', 'medium', 'low']).optional().describe('優先度'),
+      assignee_id: z.string().uuid().optional().describe('担当者ID'),
+      milestone_id: z.string().uuid().optional().describe('マイルストーンID'),
+      status_id: z.string().uuid().optional().describe('ステータスID'),
+      estimated_hours: z.number().min(0).max(9999).optional().describe('見積もり工数 (時間)'),
+    })).min(1).max(50).describe('作成するタスクの配列（最大50件）'),
+  },
+  async ({ tasks }) => {
+    const result = await client.bulkCreateTasks(tasks)
+    return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }] }
+  }
+)
+
 // ========================================
 // プロジェクト
 // ========================================
